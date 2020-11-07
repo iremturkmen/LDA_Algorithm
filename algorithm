@@ -1,0 +1,58 @@
+#LDA Algorithm for iris dataset
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_iris
+import matplotlib.pyplot as plt
+
+iris=load_iris()
+dfiris = pd.DataFrame(iris.data, columns=iris.feature_names)
+dff=pd.DataFrame(iris.target)
+print(dff)
+df=pd.DataFrame(iris.target_names)
+print(df)
+
+#f_iris = pd.DataFrame(data = iris['data'], columns = iris['feature_names'])
+#f_iris['dfiris['species'] = pd.Categorical.from_codes(iris.target, iris.target_names)
+
+#df_iris.head()
+dfiris.columns = dfiris.columns.str.replace(" ", "_")
+
+#firis.head()
+
+dfiris['species'] = pd.Categorical.from_codes(iris.target, iris.target_names)
+LG=dfiris.groupby('species')
+# Display dataset properties by classes 
+LG = dfiris.groupby('species')
+#print (LG)
+#LG.head()
+for name, group in LG:
+    # print the name of the group
+    print(name)
+    # print data for that group
+    print(group.describe())
+
+import seaborn as sns
+
+sns.pairplot(dfiris, kind = 'scatter', hue = 'species');
+# Prepare the data to be fed to LDA
+# First separate the features
+dfiris.columns
+x = dfiris.iloc[:,0:4]
+# Then the labels, because LDA is a supervised method
+y = dfiris['species']
+
+# Let's start with 2 components
+lda = LDA(n_components=2).fit_transform(x,y)
+ldadf = pd.DataFrame({'Feature1':lda[:,0], 'Feature2':lda[:,1], 'species':dfiris['species']})
+sns.pairplot(ldadf, kind = 'scatter', hue = 'species');
+# How to decide the number of dimensions for reduction?
+
+dim = range(1, len(LG))
+exp_var_ratio = np.zeros(len(dim))
+
+for i in dim: 
+    lda_i = LDA(n_components=i)
+    lda_x = lda_i.fit_transform(x,y)
+    exp_var_ratio[i-1] = lda_i.explained_variance_ratio_.sum()
+    print('Explained Variance Ratio for d = ' + str(i) + '  : ' + str(lda_i.explained_variance_ratio_.sum()))
+
