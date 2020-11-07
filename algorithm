@@ -16,11 +16,9 @@ print(df)
 
 #df_iris.head()
 dfiris.columns = dfiris.columns.str.replace(" ", "_")
-
-#firis.head()
-
 dfiris['species'] = pd.Categorical.from_codes(iris.target, iris.target_names)
 LG=dfiris.groupby('species')
+
 # Display dataset properties by classes 
 LG = dfiris.groupby('species')
 #print (LG)
@@ -45,8 +43,8 @@ y = dfiris['species']
 lda = LDA(n_components=2).fit_transform(x,y)
 ldadf = pd.DataFrame({'Feature1':lda[:,0], 'Feature2':lda[:,1], 'species':dfiris['species']})
 sns.pairplot(ldadf, kind = 'scatter', hue = 'species');
-# How to decide the number of dimensions for reduction?
 
+# How to decide the number of dimensions for reduction?
 dim = range(1, len(LG))
 exp_var_ratio = np.zeros(len(dim))
 
